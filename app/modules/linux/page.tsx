@@ -4,6 +4,7 @@ import { ModuleHeader } from "@/components/modules/ModuleHeader";
 import { StepList } from "@/components/modules/StepList";
 import { ToolBadge } from "@/components/modules/ToolBadge";
 import { DeliverableCard } from "@/components/modules/DeliverableCard";
+import { LinuxDetector } from "@/components/detection/LinuxDetector";
 
 export const metadata = {
   title: {
@@ -43,6 +44,19 @@ export default function LinuxForensicsPage() {
             <ToolBadge key={tool} name={tool} />
           ))}
         </div>
+      </section>
+
+      <section className="mt-16 space-y-4" aria-labelledby="detection">
+        <h2
+          id="detection"
+          className="text-2xl font-semibold tracking-tight"
+        >
+          Detection Lab
+        </h2>
+        <p className="font-mono text-xs text-muted-fg">
+          {"// runs entirely in your browser — nothing is uploaded"}
+        </p>
+        <LinuxDetector />
       </section>
     </Container>
   );
