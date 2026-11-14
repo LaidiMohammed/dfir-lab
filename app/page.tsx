@@ -67,7 +67,9 @@ export default function HomePage() {
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
               Each lab walks through the same professional flow: objective →
-              context → numbered steps → deliverables → toolset.
+              context → numbered steps → deliverables → toolset — plus a
+              runnable Detection Lab in every module, parsed locally in your
+              browser.
             </p>
           </div>
 

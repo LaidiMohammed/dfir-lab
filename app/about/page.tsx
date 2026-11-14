@@ -43,6 +43,11 @@ const principles = [
     title: "Methodology over improvisation",
     body: "Each case follows the same discipline: objective → context → numbered steps → deliverables → toolset. Repeatable, teachable, and auditable end to end.",
   },
+  {
+    icon: FlaskConical,
+    title: "Detection must be runnable",
+    body: "Every module ships an interactive Detection Lab — drop a real artifact (PCAP, PE binary, timeline CSV, auth.log) or load a synthetic attack scenario, and the heuristics run entirely in your browser. No uploads, no accounts: analysis never leaves your machine.",
+  },
 ];
 
 export default function AboutPage() {

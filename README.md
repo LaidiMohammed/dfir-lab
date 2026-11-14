@@ -15,6 +15,22 @@ components, and Lucide icons.
 
 Plus `/` (hero + 2×2 module grid) and `/about` (methodology + disclaimer).
 
+## Detection Labs
+
+Every module page ships an interactive **Detection Lab** — run entirely in
+your browser (no backend, nothing is uploaded):
+
+| Module | Artifact | What it detects |
+|---|---|---|
+| `/modules/timeline` | super-timeline CSV (paste or sample) | encoded PowerShell, brute force → success, new service/task, user-writable executables, log clearing |
+| `/modules/memory` | PE binary (.exe/.dll, drop or sample) | RWX sections, section entropy packing, VirtualSize≫raw hollowing, packer names |
+| `/modules/network` | `.pcap` capture (drop or sample) | port scans, DNS tunneling (QNAME/TXT), C2 beaconing, exfil volume, cleartext protocols |
+| `/modules/linux` | auth.log / syslog slice (paste or sample) | SSH brute force → success, UID 0 creation, `curl \| bash`, encoded cron payloads, authorized_keys tampering |
+
+Detectors live in `lib/detection/` (dependency-free, fully client-side);
+UI in `components/detection/`. Synthetic attack scenarios are generated
+deterministically at runtime — the same parser analyzes user-dropped artifacts.
+
 ## Develop
 
 ```bash
