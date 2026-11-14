@@ -8,10 +8,10 @@ export function Navbar() {
         <Link
           href="/"
           className="flex items-center gap-2 font-mono text-base font-bold tracking-tight text-foreground transition-colors hover:text-accent"
-          aria-label="DFIR Lab — home"
+          aria-label="Traceback — home"
         >
           <Terminal className="h-5 w-5 text-accent" aria-hidden />
-          DFIR<span className="text-accent">.LAB</span>
+          Trace<span className="text-accent">back</span>
         </Link>
         <nav aria-label="Primary navigation">
           <ul className="flex items-center gap-6 font-mono text-sm">

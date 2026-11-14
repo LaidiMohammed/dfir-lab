@@ -11,7 +11,7 @@ export default function HomePage() {
       <section className="border-b border-border">
         <Container className="flex min-h-[72vh] flex-col justify-center py-20">
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
-            {"// DFIR LAB — Interactive Digital Forensics Portfolio"}
+            {"// TRACEBACK — Interactive Digital Forensics Portfolio"}
           </p>
           <h1 className="mt-6 max-w-4xl text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
             Think like the

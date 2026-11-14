@@ -267,7 +267,7 @@ export function WorkbenchClient() {
   const exportJson = useCallback(() => {
     if (!result) return;
     const payload = {
-      tool: "DFIR.LAB — Detection Workbench",
+      tool: "Traceback — Detection Workbench",
       lab: lab.id,
       file: fileName,
       generatedAt: new Date().toISOString(),
@@ -275,7 +275,7 @@ export function WorkbenchClient() {
       findings: result.findings,
     };
     downloadBlob(
-      `dfir-lab-${lab.id}-findings.json`,
+      `traceback-${lab.id}-findings.json`,
       JSON.stringify(payload, null, 2),
       "application/json"
     );
@@ -306,7 +306,7 @@ export function WorkbenchClient() {
       ].join(",")
     );
     downloadBlob(
-      `dfir-lab-${lab.id}-findings.csv`,
+      `traceback-${lab.id}-findings.csv`,
       [header, ...rows].join("\r\n"),
       "text/csv"
     );

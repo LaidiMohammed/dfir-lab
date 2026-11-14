@@ -1,4 +1,4 @@
-# DFIR.LAB — Interactive Digital Forensics Portfolio & Detection Workbench
+# Traceback — Interactive Digital Forensics Portfolio & Detection Workbench
 
 Two halves, one story:
 

@@ -17,7 +17,7 @@ import { getModuleIcon } from "@/lib/icons";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "How the DFIR Lab portfolio is built: an evidence-first methodology " +
+    "How the Traceback portfolio is built: an evidence-first methodology " +
     "applied across four investigation labs, plus the ethics and legal " +
     "disclaimer that governs every dataset.",
 };
@@ -50,7 +50,7 @@ export default function AboutPage() {
     <Container className="py-16 md:py-24">
       {/* Header */}
       <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent">
-        {"// About DFIR Lab"}
+        {"// About Traceback"}
       </p>
       <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl">
         An evidence-first methodology,
@@ -58,7 +58,7 @@ export default function AboutPage() {
         <span className="text-accent">applied four times.</span>
       </h1>
       <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-        DFIR Lab is an interactive portfolio of four digital forensics
+        Traceback is an interactive portfolio of four digital forensics
         investigation labs. Each lab is structured like a professional case:
         scope it, collect the right evidence in the right order, analyze it,
         and ship a report an incident responder can actually use.
@@ -179,7 +179,7 @@ export default function AboutPage() {
               className="mt-0.5 h-5 w-5 shrink-0 text-accent"
               aria-hidden
             />
-            DFIR Lab is a learning portfolio, not a certification, legal
+            Traceback is a learning portfolio, not a certification, legal
             advice, or an incident-response retainer. When in doubt, engage a
             licensed professional and law enforcement.
           </li>

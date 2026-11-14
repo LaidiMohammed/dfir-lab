@@ -1,8 +1,8 @@
 {
-  "name": "dfir-lab",
+  "name": "traceback",
   "version": "0.1.0",
   "private": true,
-  "description": "DFIR Lab — interactive digital forensics portfolio: four end-to-end investigation labs (timeline reconstruction, memory forensics, network traffic analysis, Linux server investigation).",
+  "description": "Traceback — interactive digital forensics portfolio: four end-to-end investigation labs (timeline reconstruction, memory forensics, network traffic analysis, Linux server investigation).",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

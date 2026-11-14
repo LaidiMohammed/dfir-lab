@@ -8,7 +8,7 @@ import { WorkbenchCta } from "@/components/modules/WorkbenchCta";
 
 export const metadata = {
   title: {
-    absolute: "Timeline Reconstruction — DFIR Lab",
+    absolute: "Timeline Reconstruction — Traceback",
   },
   description:
     "Reconstruct a complete, timestamp-accurate picture of attacker " +

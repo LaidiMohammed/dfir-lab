@@ -4,7 +4,7 @@ import { WorkbenchClient } from "@/components/workbench/WorkbenchClient";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Detection Workbench — DFIR Lab",
+    absolute: "Detection Workbench — Traceback",
   },
   description:
     "Hands-on, in-browser detection: analyze Linux auth.log, Windows event " +

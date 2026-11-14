@@ -9,7 +9,7 @@ import { WorkbenchCta } from "@/components/modules/WorkbenchCta";
 export const metadata = {
   title: {
     absolute:
-      "Forensic Investigation of a Compromised Linux Server — DFIR Lab",
+      "Forensic Investigation of a Compromised Linux Server — Traceback",
   },
   description:
     "Trace the attack vector, persistence mechanisms, and attacker " +

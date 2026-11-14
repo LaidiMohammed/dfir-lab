@@ -8,7 +8,7 @@ import { WorkbenchCta } from "@/components/modules/WorkbenchCta";
 
 export const metadata = {
   title: {
-    absolute: "Network Traffic Analysis for Data Exfiltration — DFIR Lab",
+    absolute: "Network Traffic Analysis for Data Exfiltration — Traceback",
   },
   description:
     "Analyze a PCAP to detect data exfiltration, command-and-control " +

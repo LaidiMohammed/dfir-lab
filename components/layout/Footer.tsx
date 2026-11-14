@@ -13,7 +13,7 @@ export function Footer() {
               className="flex items-center gap-2 font-mono text-sm font-bold tracking-tight text-foreground transition-colors hover:text-accent"
             >
               <Terminal className="h-4 w-4 text-accent" aria-hidden />
-              DFIR<span className="text-accent">.LAB</span>
+              Trace<span className="text-accent">back</span>
             </Link>
             <p className="max-w-sm text-xs leading-relaxed text-muted-foreground">
               Interactive digital forensics portfolio — four end-to-end
@@ -53,7 +53,7 @@ export function Footer() {
           </nav>
         </div>
         <div className="mt-8 flex flex-col gap-2 border-t border-border pt-6 font-mono text-[11px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} DFIR.LAB — All labs use fictional, lab-based datasets.</p>
+          <p>© {new Date().getFullYear()} Traceback — All labs use fictional, lab-based datasets.</p>
           <p>For education &amp; authorized testing only.</p>
         </div>
       </div>

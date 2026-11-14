@@ -15,7 +15,7 @@ export function ModuleHeader({ module }: { module: Module }) {
         </div>
         <div className="space-y-3">
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent">
-            DFIR.LAB — Investigation Lab
+            Traceback — Investigation Lab
           </p>
           <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
             {module.title}

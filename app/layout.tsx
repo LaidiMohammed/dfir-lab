@@ -18,8 +18,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "DFIR Lab — Interactive Digital Forensics Portfolio",
-    template: "%s | DFIR Lab",
+    default: "Traceback — Interactive Digital Forensics Portfolio",
+    template: "%s | Traceback",
   },
   description:
     "Four end-to-end DFIR investigation labs: timeline reconstruction, " +

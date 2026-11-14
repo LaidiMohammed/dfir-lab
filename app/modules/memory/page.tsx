@@ -8,7 +8,7 @@ import { WorkbenchCta } from "@/components/modules/WorkbenchCta";
 
 export const metadata = {
   title: {
-    absolute: "Memory Forensics — DFIR Lab",
+    absolute: "Memory Forensics — Traceback",
   },
   description:
     "Analyze volatile memory from a compromised system to expose " +
