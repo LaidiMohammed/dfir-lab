@@ -10,7 +10,7 @@ components, and Lucide icons.
 |---|---|---|
 | `/modules/timeline` | 1 — Timeline Reconstruction | Super-timeline of a compromised Windows host |
 | `/modules/memory` | 2 — Memory Forensics | RAM analysis of a compromised host |
-| `/modules/network` | 3 — Network Traffic Analysis | PCAP forensics of a suspected intrusion |
+| `/modules/network` | 3 - Network Traffic Analysis for Data Exfiltration | C2, port scanning, exfiltration via PCAP |
 | `/modules/linux` | 4 — Linux Server Investigation | Persistence, attack vector, attacker actions |
 
 Plus `/` (hero + 2×2 module grid) and `/about` (methodology + disclaimer).
