@@ -4,6 +4,7 @@ import { ModuleHeader } from "@/components/modules/ModuleHeader";
 import { StepList } from "@/components/modules/StepList";
 import { ToolBadge } from "@/components/modules/ToolBadge";
 import { DeliverableCard } from "@/components/modules/DeliverableCard";
+import { WorkbenchCta } from "@/components/modules/WorkbenchCta";
 
 export const metadata = {
   title: {
@@ -27,6 +28,7 @@ export default function LinuxForensicsPage() {
     <Container className="py-16 md:py-24">
       <ModuleHeader module={linuxModule} />
 
+            <WorkbenchCta lab="linux" />
       <section className="mt-16 space-y-6">
         <h2 className="text-2xl font-semibold tracking-tight">Methodology</h2>
         <StepList steps={linuxModule.steps} />

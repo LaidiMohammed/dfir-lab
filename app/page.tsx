@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, Radar, ShieldCheck } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { modules } from "@/lib/data/modules";
 import { getModuleIcon } from "@/lib/icons";
@@ -20,10 +20,10 @@ export default function HomePage() {
             evidence.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Four end-to-end investigation labs — timeline reconstruction,
-            memory forensics, network traffic analysis, and Linux server
-            investigation. Methodology-first, tool-accurate, and built for
-            analysts.
+            Four end-to-end investigation labs — plus a live, in-browser
+            detection workbench that analyzes real auth.logs, event CSVs,
+            process lists and PCAP captures. Methodology-first, tool-accurate,
+            and built for analysts.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
             <Link
@@ -32,6 +32,13 @@ export default function HomePage() {
             >
               Explore the modules
               <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+            <Link
+              href="/workbench"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-accent/50 bg-accent-muted px-6 py-3 font-mono text-sm font-semibold uppercase tracking-wider text-accent transition-all hover:border-accent"
+            >
+              <Radar className="h-4 w-4" aria-hidden />
+              Detection workbench
             </Link>
             <Link
               href="/about"

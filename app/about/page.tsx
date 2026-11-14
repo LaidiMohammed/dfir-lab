@@ -101,6 +101,24 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Workbench pointer */}
+      <section className="mt-16 rounded-xl border border-accent/40 bg-accent-muted p-6">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Hands-on beats slideware
+        </h2>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/90">
+          Every lab ships with its own running analyzer in the Detection
+          Workbench — real parsing of auth.log, event CSV exports, pslist
+          captures and PCAP files, entirely in your browser.{" "}
+          <Link
+            href="/workbench"
+            className="font-semibold text-accent underline underline-offset-4 hover:opacity-80"
+          >
+            Open the workbench →
+          </Link>
+        </p>
+      </section>
+
       {/* Methodology principles */}
       <section className="mt-16">
         <h2 className="text-2xl font-semibold tracking-tight">

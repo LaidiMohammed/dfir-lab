@@ -25,6 +25,14 @@ export function Navbar() {
             </li>
             <li>
               <Link
+                href="/workbench"
+                className="text-muted-foreground transition-colors hover:text-accent"
+              >
+                Workbench
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/about"
                 className="text-muted-foreground transition-colors hover:text-accent"
               >
