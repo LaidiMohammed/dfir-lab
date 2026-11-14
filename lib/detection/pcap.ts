@@ -64,6 +64,10 @@ function shannonEntropy(s: string): number {
 const EXFIL_BYTES = 250 * 1024; // 250 KB per destination
 const BEACON_MIN_PACKETS = 5;
 const BEACON_MAX_CV = 0.3; // coefficient of variation of inter-arrival times
+const PORT_SCAN_MIN_PORTS = 15; // distinct SYN-only ports from one source
+const DNS_TUNNEL_MIN_QUERIES = 20; // total queries to one parent domain
+const DNS_TUNNEL_MIN_LABEL = 24; // avg subdomain label length (chars)
+const DNS_TUNNEL_TXT_MIN = 8; // TXT queries to one parent domain
 const SUSPICIOUS_PORTS = new Map<number, string>([
   [4444, "Metasploit default listener"],
   [4445, "Metasploit alternate listener"],
@@ -278,7 +282,9 @@ function parseL4(
 
 /* ── detection ─────────────────────────────────────────────────────────────── */
 
-function parseDnsQuestion(payload: Uint8Array): string | null {
+function parseDnsQuestionFull(
+  payload: Uint8Array
+): { name: string; qtype: number } | null {
   // DNS header = 12 bytes; first question follows.
   if (payload.length < 17) return null;
   const view = new DataView(payload.buffer, payload.byteOffset, payload.byteLength);
@@ -298,8 +304,17 @@ function parseDnsQuestion(payload: Uint8Array): string | null {
     labels.push(String.fromCharCode(...payload.subarray(off, off + len)));
     off += len;
   }
+  if (off + 2 > payload.length) return null;
+  const qtype = view.getUint16(off);
   const name = labels.join(".").toLowerCase();
-  return name.length > 0 && name.length < 255 ? name : null;
+  return name.length > 0 && name.length < 255 ? { name, qtype } : null;
+}
+
+/** Parent domain approximation: last two labels. */
+function parentDomain(qname: string): string {
+  const labels = qname.split(".").filter(Boolean);
+  if (labels.length <= 2) return labels.join(".");
+  return labels.slice(-2).join(".");
 }
 
 export function analyzePcap(bytes: Uint8Array): AnalysisResult {
@@ -355,11 +370,11 @@ export function analyzePcap(bytes: Uint8Array): AnalysisResult {
   }
 
   // ── DNS question extraction + entropy analysis ─────────────────────────────
-  const dnsQueries: { qname: string; srcIp: string; timeMs: number }[] = [];
+  const dnsQueries: { qname: string; qtype: number; srcIp: string; timeMs: number }[] = [];
   for (const p of packets) {
     if (p.proto === "udp" && p.dstPort === 53) {
-      const q = parseDnsQuestion(p.payload);
-      if (q) dnsQueries.push({ qname: q, srcIp: p.srcIp, timeMs: p.timeMs });
+      const q = parseDnsQuestionFull(p.payload);
+      if (q) dnsQueries.push({ qname: q.name, qtype: q.qtype, srcIp: p.srcIp, timeMs: p.timeMs });
     }
   }
   for (const { qname, srcIp } of dnsQueries) {
@@ -437,6 +452,81 @@ export function analyzePcap(bytes: Uint8Array): AnalysisResult {
           "Identify what was staged (broker/file server logs), block the destination, scope data loss with the data owner.",
       });
     }
+  }
+
+  // ── NETX-007/008 — DNS tunneling (QNAME payload & TXT exfil) ─────────────
+  const byDomain = new Map<
+    string,
+    { total: number; txt: number; subLenTotal: number; src: string }
+  >();
+  for (const { qname, qtype, srcIp } of dnsQueries) {
+    const domain = parentDomain(qname);
+    if (!domain || !domain.includes(".")) continue;
+    const entry =
+      byDomain.get(domain) ?? { total: 0, txt: 0, subLenTotal: 0, src: srcIp };
+    entry.total += 1;
+    if (qtype === 16) entry.txt += 1; // TXT
+    entry.subLenTotal += qname.split(".")[0]?.length ?? 0;
+    byDomain.set(domain, entry);
+  }
+  for (const [domain, d] of byDomain) {
+    const avgLen = d.subLenTotal / Math.max(d.total, 1);
+    if (d.total >= DNS_TUNNEL_MIN_QUERIES && avgLen >= DNS_TUNNEL_MIN_LABEL) {
+      findings.push({
+        ruleId: "NETX-007",
+        severity: "high",
+        title: `DNS tunneling — ${d.total} long subdomain queries to ${domain}`,
+        mitre: "T1071.004 — DNS",
+        summary:
+          "Hundreds of encoded-looking subdomains against one parent domain at a steady rate is the classic DNS tunnel. Data crosses the boundary inside the query name itself.",
+        evidence: `${d.src} → ${domain} (avg subdomain ${avgLen.toFixed(0)} chars over ${d.total} queries)`,
+        remediation:
+          "Sinkhole or rate-limit the domain at the resolver, capture full DNS logs, hunt for matching host traffic on port 53.",
+      });
+    }
+    if (d.txt >= DNS_TUNNEL_TXT_MIN) {
+      findings.push({
+        ruleId: "NETX-008",
+        severity: "high",
+        title: `Excessive DNS TXT queries to ${domain} (${d.txt})`,
+        mitre: "T1071.004 — DNS",
+        summary:
+          "TXT records are the go-to carrier for DNS-based C2 channels (tunneling, beacon responses, staged payloads).",
+        evidence: `${d.src} queried ${d.txt} TXT records for ${domain}`,
+        remediation:
+          "Block or answer-sinkhole the domain, inspect the querying host for tunneling tooling, capture the full session.",
+      });
+    }
+  }
+
+  // ── NETX-006 — port scan (SYN-only to many distinct ports) ────────────────
+  const synByPair = new Map<
+    string,
+    { src: string; dst: string; ports: Set<number> }
+  >();
+  for (const p of packets) {
+    if (!p.tcpSyn) continue;
+    const key = `${p.srcIp}>${p.dstIp}`;
+    const entry =
+      synByPair.get(key) ?? { src: p.srcIp, dst: p.dstIp, ports: new Set<number>() };
+    entry.ports.add(p.dstPort);
+    synByPair.set(key, entry);
+  }
+  for (const { src, dst, ports } of synByPair.values()) {
+    if (ports.size < PORT_SCAN_MIN_PORTS) continue;
+    const sorted = [...ports].sort((a, b) => a - b);
+    const preview = sorted.slice(0, 15).join(", ");
+    findings.push({
+      ruleId: "NETX-006",
+      severity: "high",
+      title: `Port scan: ${ports.size} SYN-only ports from ${src} → ${dst}`,
+      mitre: "T1595.001 — Active Scanning: Port Scan",
+      summary:
+        "One source fired SYN-only probes across many distinct destination ports toward one target — standard pre-exploitation service discovery.",
+      evidence: `${src} → ${dst}\nSYN-only ports (${ports.size}): ${preview}${ports.size > 15 ? ", …" : ""}`,
+      remediation:
+        "Block the source, verify no scanned service was reachable, pivot the host into incident triage for follow-on exploitation.",
+    });
   }
 
   // ── NETX-005 — suspicious destination ports ───────────────────────────────

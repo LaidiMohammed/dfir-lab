@@ -136,6 +136,9 @@ const LABS: LabConfig[] = [
       { rule: "NETX-003", what: "Bulk transfer ≥ 250 KB / dst" },
       { rule: "NETX-004", what: "High-entropy DNS (DGA)" },
       { rule: "NETX-005", what: "Suspicious ports (4444, 6667…)" },
+      { rule: "NETX-006", what: "Port scan (SYN-only, ≥15 ports)" },
+      { rule: "NETX-007", what: "DNS tunneling (long subdomains)" },
+      { rule: "NETX-008", what: "Excessive TXT queries" },
     ],
   },
 ];
