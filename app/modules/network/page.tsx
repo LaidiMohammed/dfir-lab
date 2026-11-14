@@ -7,13 +7,13 @@ import { DeliverableCard } from "@/components/modules/DeliverableCard";
 
 export const metadata = {
   title: {
-    absolute: "Network Traffic Analysis — DFIR Lab",
+    absolute: "Network Traffic Analysis for Data Exfiltration — DFIR Lab",
   },
   description:
-    "Dissect packet captures to identify attacker infrastructure, " +
-    "reconstruct intrusion activity, and extract payloads — PCAP " +
-    "validation, traffic baselining, stream reconstruction, Zeek/Suricata " +
-    "hunting, and file carving.",
+    "Analyze a PCAP to detect data exfiltration, command-and-control " +
+    "channels, and port scanning using Wireshark, tshark, and Zeek. Full " +
+    "network forensics workflow from conversation overview to IoC " +
+    "blocking.",
 };
 
 export default function NetworkModulePage() {

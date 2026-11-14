@@ -178,92 +178,92 @@ export const modules: Module[] = [
   },
   {
     slug: "network",
-    title: "Network Traffic Analysis",
-    subtitle: "PCAP Forensics of a Suspected Intrusion",
+    title: "Network Traffic Analysis for Data Exfiltration",
+    subtitle: "PCAP Analysis — C2, Exfiltration, Port Scanning",
     description:
-      "Dissect packet captures from a compromised network segment to " +
-      "identify attacker infrastructure, reconstruct attacker activity, and " +
-      "extract payloads. Covers PCAP validation, traffic baselining, stream " +
-      "reconstruction, Zeek/Suricata hunting, and file carving with hashing " +
-      "— a complete network forensics workflow.",
+      "Analyze a PCAP to detect data exfiltration, command-and-control " +
+      "channels, and port scanning using Wireshark, tshark, and Zeek. A " +
+      "complete network forensics workflow — from conversation overview to " +
+      "IoC blocking recommendations.",
     objective:
-      "Analyze a packet capture to identify malicious hosts, attacker " +
-      "command-and-control infrastructure, exfiltrated data, and the " +
-      "sequence of network activity during the intrusion.",
+      "Identify data exfiltration, command-and-control (C2) traffic, or " +
+      "port scanning activity inside a network capture (PCAP) taken at the " +
+      "perimeter.",
     context:
-      "Your IDS/NSM flagged anomalous traffic — or a full-packet capture " +
-      "was taken during an incident. You have a PCAP (or a directory of " +
-      "PCAPs) spanning the incident window and must extract attacker " +
-      "behavior, payloads, and indicators without modifying the capture.",
+      "You have a .pcap file captured at the network perimeter. An IDS alert " +
+      "was triggered, or a user reports abnormal slowness. You must determine " +
+      "whether data left the network, which internal host is compromised, and " +
+      "where the traffic was going.",
     steps: [
       {
         order: 1,
-        title: "PCAP Scoping & Validation",
+        title: "Load & Overview",
         body:
-          "Profile the capture before diving in: capinfos reports packet " +
-          "count, duration, link type, and average rate; verify the SHA256 " +
-          "of the PCAP against the acquisition record; confirm interface " +
-          "direction and timezone so every downstream timestamp is sound.",
-        tools: ["capinfos", "sha256sum"],
+          "Open the PCAP in Wireshark. Use Statistics > Conversations to " +
+          "identify the highest-volume flows and every external IP the " +
+          "capture touches. Note the protocol distribution (Statistics > " +
+          "Protocol Hierarchy) — a flat capture dominated by one protocol is " +
+          "often a sign of a focused exfiltration channel.",
+        tools: ["Wireshark", "tshark", "capinfos"],
       },
       {
         order: 2,
-        title: "Traffic Baseline & Profiling",
+        title: "Filter Suspicious Protocols",
         body:
-          "Build a statistical picture: protocol hierarchy (tshark -z " +
-          "io,phs), top talkers (endpoints), conversation matrix, and DNS/HTTP " +
-          "query volumes. Flag anomalies — beacon-like periodicity, rare " +
-          "ports, unusual ASNs — to scope the hunt.",
-        tools: ["tshark", "tcpdump"],
+          "Filter unencrypted protocols (HTTP, FTP, DNS) and search for " +
+          "suspicious strings such as http.request.uri contains \"exfil\". " +
+          "For encrypted traffic, inspect TLS certificates and SNI values — " +
+          "anomalous certificate issuers or SNIs on internal hosts are strong " +
+          "indicators of C2 over TLS.",
+        tools: ["Wireshark", "tshark", "NetworkMiner"],
       },
       {
         order: 3,
-        title: "Stream Reconstruction",
+        title: "Scan Detection",
         body:
-          "Follow TCP/UDP streams in Wireshark (or tshark -q -z follow) to " +
-          "reassemble HTTP requests, DNS exchanges, FTP sessions, and TLS " +
-          "handshakes. Extract credentials in cleartext protocols, identify " +
-          "web-shell URIs, and spot data staging and encoded payloads.",
-        tools: ["wireshark", "tshark", "ngrep"],
+          "Use Statistics > Endpoints and look for a single source hitting " +
+          "many destination ports in a short window (tcp.flags.syn == 1 && " +
+          "tcp.flags.ack == 0). Correlate scan bursts with subsequent " +
+          "successful connections to determine which ports were opened.",
+        tools: ["Wireshark", "tshark", "Zeek"],
       },
       {
         order: 4,
-        title: "Detection & Hunting with Zeek/Suricata",
+        title: "Stream Follow & Reconstruction",
         body:
-          "Run Zeek over the PCAP to generate structured conn, dns, http, " +
-          "ssl, files, and notice logs; correlate them with Suricata alerts " +
-          "for known-bad signatures. Hunt for beaconing intervals, DGA " +
-          "domains, long DNS TXT answers (tunneling), and large outbound " +
-          "transfers.",
-        tools: ["zeek", "suricata", "tshark"],
+          "Follow TCP streams (Follow > TCP Stream) to reconstruct exchanges " +
+          "byte for byte. Look for exfiltration patterns: encoded payloads " +
+          "(base64, hex), large POST bodies to unknown IPs, or repeated " +
+          "DNS TXT queries — a classic DNS tunneling channel.",
+        tools: ["Wireshark", "tcpflow", "NetworkMiner"],
       },
       {
         order: 5,
-        title: "Extraction & Reporting",
+        title: "Log Correlation & IoC Extraction",
         body:
-          "Export transferred objects (Wireshark — Export Objects, or " +
-          "zeek-cut + files.log), carve executables and documents, and hash " +
-          "every artefact. Build the network attack timeline, map source ↔ " +
-          "destination mappings to your host findings, and deliver the IOC " +
-          "package for blocking and hunting.",
-        tools: ["wireshark", "sha256sum", "strings"],
+          "If available, correlate PCAP timestamps with system logs (Sysmon, " +
+          "EDR, proxy logs) to identify the originating process on the " +
+          "internal host. Extract IoCs — external IPs, domains, JA3 " +
+          "fingerprints, User-Agent strings — ready to feed into firewall and " +
+          "proxy blocklists.",
+        tools: ["Zeek", "tshark", "grep", "jq"],
       },
     ],
     deliverables: [
-      "Identified attacker infrastructure (C2 IPs, domains, URLs)",
-      "Malicious flows and beaconing patterns with source/destination mapping",
-      "Extracted files and payloads with SHA256 hashes",
-      "Estimated data exfiltration volume and channels",
-      "IOC package (IPs, domains, URLs, hashes) for blocking and detection",
+      "Source and destination IPs involved in the exfiltration (with direction)",
+      "Volume of data transferred and the exact timeframe (UTC start/end)",
+      "Reconstructed evidence (stream excerpts, screenshots, hashes of carved files)",
+      "List of IoCs to block: external IPs, domains, JA3 fingerprints, User-Agents",
+      "Containment and remediation recommendations",
     ],
     tools: [
-      "wireshark",
+      "Wireshark",
       "tshark",
       "tcpdump",
-      "zeek",
-      "suricata",
+      "NetworkMiner",
+      "Zeek",
       "capinfos",
-      "sha256sum",
+      "tcpflow",
     ],
     icon: "Network",
   },
